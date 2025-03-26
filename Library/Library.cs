@@ -1,0 +1,102 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Library
+{
+    public class Library<T> : IMediaManager<T> where T : Media
+    {
+        public List<T> _list = new List<T>();
+        public Dictionary<string, T> _dict = new Dictionary<string, T>();
+
+        public void Add(T item) 
+        {  
+            _list.Add(item);
+            _dict[item._title] = item;
+            Console.WriteLine($"Объект {item._title} добавлен");
+        }
+        public void Remove(string title) 
+        {
+            T removedItem = _dict[title];
+            _list.Remove(removedItem);
+            _dict.Remove(title);
+            Console.WriteLine($"Объект {title} удален");
+        }
+        public T FindByTitle(string title)
+        {
+            if (_dict.ContainsKey(title))
+            {
+                return _dict[title];
+            }
+            throw new KeyNotFoundException($"'{title}' не найдено.");
+        }
+        // отфильтровать по году
+        public IEnumerable<T> FilterByYear(int year)
+        {
+            return _list.Where(item => item._yearPublished == year);
+        }
+        // Найти все недоступные элементы
+        public IEnumerable<T> GetAllAvailable()
+        {
+            return _list.Where(item => item._isAvailable);
+        }
+
+        // Найти все книги, выпущенные после xxxx года
+        public IEnumerable<Book> GetBooksAfterYear(int year)
+        {
+            return _list.OfType<Book>().Where(book => book._yearPublished > year);
+        }
+        // Получить список фильмов, отсортированных по длительности
+        public IEnumerable<Movie> GetMoviesSortedByDuration()
+        {
+            return _list.OfType<Movie>().OrderBy(movie => movie._duration);
+        }
+        // Найти все недоступные элементы
+        public IEnumerable<T> GetAllUnavailable()
+        {
+            return _list.Where(item => !item._isAvailable);
+        }
+
+        public void Print(T item)
+        {
+            Console.Write($"{item._title}\t| {item._autor}\t| {item._yearPublished}\t| {item._isAvailable}\t| ");
+            if (item is Book book)
+            {
+                Console.WriteLine($"{book._pages}\t\t| {book._genre}");
+            }
+            else if (item is Movie movie)
+            {
+                Console.WriteLine($"{movie._duration}m\t\t| {movie._director}");
+            }
+            else if (item is MusicAlbum album)
+            {
+                Console.WriteLine($"{album._artist}\t| {album._trackCount}");
+            }
+        }
+
+        public void SwitchAvalability() { }
+
+        public void PrintAll() 
+        {
+            foreach (var item in _list)
+            {
+                Console.Write($"{item._title}\t| {item._autor}\t| {item._yearPublished}\t| {item._isAvailable}\t| ");
+                if (item is Book book)
+                {
+                    Console.WriteLine($"{book._pages}\t\t| {book._genre}");
+                }
+                else if (item is Movie movie)
+                {
+                    Console.WriteLine($"{movie._duration}m\t\t| {movie._director}");
+                }
+                else if (item is MusicAlbum album)
+                {
+                    Console.WriteLine($"{album._artist}\t| {album._trackCount}");
+                }
+            }
+        }
+    }
+}
