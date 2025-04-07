@@ -28,7 +28,7 @@
 
             Console.WriteLine("\n");
             Console.WriteLine("Книги, выпущенные в 2008 году:");
-            foreach (var item in lib.FilterByYear(2008))
+            foreach (var item in lib.FilterByYear(-243))
             {
                 lib.Print(item);
             }

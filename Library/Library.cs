@@ -13,48 +13,73 @@ namespace Library
         public Dictionary<string, T> _dict = new Dictionary<string, T>();
 
         public void Add(T item) 
-        {  
-            _list.Add(item);
-            _dict[item._title] = item;
-            Console.WriteLine($"Объект {item._title} добавлен");
+        {
+            try
+            {
+                _list.Add(item);
+                _dict[item._title] = item;
+                Console.WriteLine($"Объект {item._title} добавлен");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            
         }
         public void Remove(string title) 
         {
-            T removedItem = _dict[title];
-            _list.Remove(removedItem);
-            _dict.Remove(title);
-            Console.WriteLine($"Объект {title} удален");
+            try
+            {
+                T removedItem = _dict[title];
+                _list.Remove(removedItem);
+                _dict.Remove(title);
+                Console.WriteLine($"Объект {title} удален");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
+
         public T FindByTitle(string title)
         {
-            if (_dict.ContainsKey(title))
+            try
             {
                 return _dict[title];
             }
-            throw new KeyNotFoundException($"'{title}' не найдено.");
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+            
         }
-        // отфильтровать по году
+
+        //отфильтровать по году
         public IEnumerable<T> FilterByYear(int year)
         {
             return _list.Where(item => item._yearPublished == year);
         }
-        // Найти все недоступные элементы
+
+        //найти все недоступные элементы
         public IEnumerable<T> GetAllAvailable()
         {
             return _list.Where(item => item._isAvailable);
         }
 
-        // Найти все книги, выпущенные после xxxx года
+        //найти все книги, выпущенные после xxxx года
         public IEnumerable<Book> GetBooksAfterYear(int year)
         {
             return _list.OfType<Book>().Where(book => book._yearPublished > year);
         }
-        // Получить список фильмов, отсортированных по длительности
+
+        //получить список фильмов, отсортированных по длительности
         public IEnumerable<Movie> GetMoviesSortedByDuration()
         {
             return _list.OfType<Movie>().OrderBy(movie => movie._duration);
         }
-        // Найти все недоступные элементы
+
+        //найти все недоступные элементы
         public IEnumerable<T> GetAllUnavailable()
         {
             return _list.Where(item => !item._isAvailable);
@@ -77,7 +102,10 @@ namespace Library
             }
         }
 
-        public void SwitchAvalability() { }
+        public void SwitchAvalability(T item)
+        {
+            item._isAvailable = !(item._isAvailable);
+        }
 
         public void PrintAll() 
         {
